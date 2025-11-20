@@ -1,7 +1,8 @@
-// PANIER STOCKÉ EN MÉMOIRE
+// --------------------- PANIER ------------------------
+
 let cart = [];
 
-// AFFICHER LA BARRE PANIER
+// Mise à jour de la barre panier
 function updateCartBar() {
     const bar = document.getElementById("cart-bar");
     if (cart.length > 0) {
@@ -12,14 +13,14 @@ function updateCartBar() {
     }
 }
 
-// COMPTER LES ARTICLES
+// Nombre total d’articles
 function getTotalItems() {
-    return cart.reduce((sum, item) => sum + item.quantity, 0);
+    return cart.reduce((s, i) => s + i.quantity, 0);
 }
 
-// AJOUTER UN PRODUIT
+// Ajouter un produit
 function addToCart(name, price) {
-    const existing = cart.find(item => item.name === name);
+    const existing = cart.find(i => i.name === name);
 
     if (existing) {
         existing.quantity++;
@@ -30,38 +31,83 @@ function addToCart(name, price) {
     updateCartBar();
 }
 
-// OUVERTURE DU PANIER
+// --------------------- MODAL ------------------------
+
 function openCart() {
-    let recap = "Voici votre commande CaféMisu :\n\n";
+    document.getElementById("cart-modal-overlay").style.display = "block";
+    document.getElementById("cart-modal").style.display = "block";
+    renderCart();
+}
 
-    cart.forEach(item => {
-        recap += `• ${item.quantity} × ${item.name} — ${item.price * item.quantity} Fcfa\n`;
+function closeCart() {
+    document.getElementById("cart-modal-overlay").style.display = "none";
+    document.getElementById("cart-modal").style.display = "none";
+}
+
+document.getElementById("cart-close-btn").onclick = closeCart;
+
+// --------------------- AFFICHAGE PANIER ------------------------
+
+function renderCart() {
+    const container = document.getElementById("cart-items");
+    container.innerHTML = "";
+
+    cart.forEach((item, index) => {
+        container.innerHTML += `
+            <div class="cart-item">
+                <span class="cart-name">${item.name}</span>
+                <div class="cart-controls">
+                    <button class="cart-btn" onclick="decrease(${index})">-</button>
+                    <span>${item.quantity}</span>
+                    <button class="cart-btn" onclick="increase(${index})">+</button>
+                </div>
+            </div>
+        `;
     });
 
-    recap += `\nTOTAL : ${getTotalPrice()} Fcfa\n\nSouhaitez-vous envoyer cette commande sur WhatsApp ?`;
+    document.getElementById("cart-total-price").textContent =
+        `${getTotalPrice()} Fcfa`;
+}
 
-    if (confirm(recap)) {
-        sendWhatsApp();
+// Augmenter quantité
+function increase(index) {
+    cart[index].quantity++;
+    renderCart();
+    updateCartBar();
+}
+
+// Diminuer quantité
+function decrease(index) {
+    if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+    } else {
+        cart.splice(index, 1);
     }
+    renderCart();
+    updateCartBar();
 }
 
-// TOTAL DU PANIER
+// Prix total
 function getTotalPrice() {
-    return cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    return cart.reduce((s, i) => s + i.price * i.quantity, 0);
 }
 
-// ENVOI WHATSAPP
-function sendWhatsApp() {
-    let message = "Bonjour, je souhaite commander :\n\n";
+// --------------------- ENVOI WHATSAPP ------------------------
 
-    cart.forEach(item => {
-        message += `• ${item.quantity} × ${item.name} — ${item.price * item.quantity} Fcfa\n`;
+document.getElementById("cart-whatsapp-btn").onclick = function () {
+
+    if (cart.length === 0) return;
+
+    let msg = "Bonjour, je souhaite commander :\n\n";
+
+    cart.forEach(i => {
+        msg += `• ${i.quantity} × ${i.name} — ${i.price * i.quantity} Fcfa\n`;
     });
 
-    message += `\nTotal : ${getTotalPrice()} Fcfa\n`;
+    msg += `\nTotal : ${getTotalPrice()} Fcfa`;
 
-    const phone = "2250716699999";
-    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    const phone = "2250716699999"; // ton numéro
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
     window.location.href = url;
-}
+};
