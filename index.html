@@ -16,7 +16,7 @@
       background-color: #F9F5F1;
       color: #A87555;
 
-      /* texture papier ultra légère */
+      /* Texture papier ultra légère */
       background-image: radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px);
       background-size: 6px 6px;
 
@@ -54,7 +54,7 @@
 
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-20px); }
-      to   { opacity: 1; transform: translateY(0);   }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     p {
@@ -83,15 +83,23 @@
       transform: translateY(-3px);
     }
 
-    /* Bouton WhatsApp style cacao/beige */
-    .btn-whatsapp {
-      background: #25D366;
-      color: white;
+    /* Bouton WhatsApp épuré */
+    .btn-commande {
+      background: transparent;
+      border: 2px solid #A87555;
+      color: #A87555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 80%;
     }
 
-    .btn-whatsapp:hover {
-      background: #1eb255;
+    .btn-commande:hover {
+      background: rgba(168,117,85,0.1);
+      transform: translateY(-3px);
     }
+
   </style>
 </head>
 
@@ -102,13 +110,18 @@
 
     <p>Découvrez nos desserts & boissons<br>faits avec passion.</p>
 
+    <!-- Bouton Voir le menu -->
     <a href="menu/cafemisu_menu.pdf" class="btn">
       📄 Voir le menu
     </a>
 
-    <a href="https://wa.me/2250716699999" class="btn btn-whatsapp">
-      🛍️ Commander sur WhatsApp
+    <!-- Bouton WhatsApp épuré avec icône -->
+    <a href="https://wa.me/2250716699999" class="btn btn-commande">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+           style="width:20px; height:20px; vertical-align:middle;" />
+      Commander
     </a>
+
   </div>
 
 </body>
