@@ -8,324 +8,81 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+    :root {
+        --cafe: #A87555;
+        --fond: #F9F5F1;
+        --bord: rgba(168,117,85,0.35);
+        --radius: 14px;
+    }
+
     body {
-        background-color: #F9F5F1;
+        background-color: var(--fond);
         font-family: 'Playfair Display', serif;
-        color: #A87555;
+        color: var(--cafe);
         margin: 0;
         padding: 0 20px 160px;
-        line-height: 1.65;
         overflow-x: hidden;
     }
 
-    /* LOADER PREMIUM */
-    #loader {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: #F9F5F1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-        animation: fadeOut 1s ease forwards;
-        animation-delay: 1.2s;
-    }
-    #loader .circle {
-        width: 60px; height: 60px;
-        border-radius: 50%;
-        border: 5px solid rgba(168,117,85,0.25);
-        border-top-color: #A87555;
-        animation: spin 0.9s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-
-    /* TITRE */
     h1 {
         text-align: center;
-        margin-top: 42px;
+        margin-top: 38px;
         margin-bottom: 8px;
         font-size: 2.7rem;
         font-weight: 700;
     }
 
-    /* RETOUR */
-    #back-home {
-        display: block;
-        text-align: center;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        text-decoration: none;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #A87555;
-        opacity: 0.75;
-        transition: 0.2s;
-    }
-    #back-home:hover { opacity: 1; }
-
-    h2 {
-        margin-top: 45px;
-        margin-bottom: 15px;
-        font-size: 1.9rem;
-        border-bottom: 2px solid #A87555;
-        display: inline-block;
-        padding-bottom: 5px;
-    }
-
-    /* ITEMS */
-    .item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 0;
-        border-bottom: 1px solid rgba(168,117,85,0.25);
-        position: relative;
-    }
-    .name {
-        font-weight: 600;
-        max-width: 62%;
-        font-size: 1.2rem;
-    }
-    .price {
-        margin-right: 12px;
-        font-size: 1.2rem;
-        opacity: 0.85;
-    }
-    .add-btn {
-        width: 46px; height: 46px;
-        border-radius: 50%;
-        background: #fff;
-        border: 2px solid #A87555;
-        color: #A87555;
-        font-size: 23px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        transition: 0.2s ease;
-    }
-    .add-btn:hover {
-        transform: scale(1.12);
-        background: #F3E5DB;
-    }
-
-    /* Animation +1 */
-    .plus-one {
-        position: absolute;
-        color: #A87555;
-        font-size: 1.2rem;
-        font-weight: bold;
-        animation: floatUp 0.8s ease forwards;
-        pointer-events: none;
-        left: 70%; top: -5px;
-    }
-    @keyframes floatUp {
-        0% { opacity: 0; transform: translateY(10px); }
-        30% { opacity: 1; }
-        100% { opacity: 0; transform: translateY(-20px); }
-    }
-
-    /* FLOATING BUTTON */
-    #floating-cart-btn {
-        position: fixed;
-        bottom: 22px; right: 22px;
-        width: 70px; height: 70px;
-        background: none !important;
-        border: none !important;
-        padding: 0;
-        cursor: pointer;
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: 0.15s ease;
-    }
-    #floating-cart-btn.shake { animation: shake 0.4s ease; }
-
-    @keyframes shake {
-        0% { transform: translateX(0); }
-        25% { transform: translateX(-4px); }
-        50% { transform: translateX(4px); }
-        75% { transform: translateX(-4px); }
-        100% { transform: translateX(0); }
-    }
-
-    #cart-count {
-        position: absolute;
-        top: -6px; right: -6px;
-        width: 26px; height: 26px;
-        background: white;
-        border-radius: 50%;
-        border: 2px solid #A87555;
-        color: #A87555;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-        transition: transform 0.2s ease;
-    }
-    #cart-count.bump { transform: scale(1.3); }
-
-    /* BOTTOM SHEET PRO */
-    #cart-sheet {
-        position: fixed;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 72%;
-        background: rgba(255,255,255,0.55);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 -7px 25px rgba(0,0,0,0.18);
-        border-radius: 22px 22px 0 0;
-        transition: 0.38s cubic-bezier(.25,.46,.45,.94);
-        z-index: 1000;
-        padding: 22px 20px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-
-    #sheet-header {
-        position: sticky;
-        top: 0;
-        background: rgba(255,255,255,0.35);
-        backdrop-filter: blur(12px);
-        padding-bottom: 14px;
-        padding-top: 10px;
-        z-index: 10;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 1.4rem;
-        font-weight: 700;
-    }
-
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 0;
-        border-bottom: 1px solid rgba(168,117,85,0.25);
-        animation: slideIn 0.3s ease forwards;
-        opacity: 0;
-    }
-    @keyframes slideIn {
-        from { opacity: 0; transform: translateX(15px); }
-        to { opacity: 1; transform: translateX(0); }
-    }
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CaféMisu – Menu</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-
-<style>
-    body {
-        background-color: #F9F5F1;
-        font-family: 'Playfair Display', serif;
-        color: #A87555;
-        margin: 0;
-        padding: 0 20px 200px;
-        line-height: 1.65;
-        overflow-x: hidden;
-    }
-
-    /* ==================== PREMIUM LOADER ==================== */
-    #loader {
-        position: fixed;
-        top: 0; 
-        left: 0;
-        width: 100%; 
-        height: 100%;
-        background: #F9F5F1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 2000;
-        animation: fadeOut 1s ease forwards;
-        animation-delay: 1.2s;
-    }
-
-    #loader .circle {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        border: 5px solid rgba(168,117,85,0.25);
-        border-top-color: #A87555;
-        animation: spin 0.9s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-
-    /* ==================== TITRES ==================== */
-    h1 {
-        text-align: center;
-        margin-top: 42px;
-        margin-bottom: 8px;
-        font-size: 2.7rem;
-        font-weight: 700;
-    }
-
-    #back-home {
+    a#back-home {
         display:block;
         text-align:center;
         margin-top:10px;
-        margin-bottom:10px;
+        margin-bottom:25px;
         text-decoration:none;
-        font-size:1.1rem;
+        font-size:1.15rem;
         font-weight:600;
-        color:#A87555;
+        color: var(--cafe);
         opacity:0.75;
         transition:0.2s;
     }
-
-    #back-home:hover { opacity:1; }
+    a#back-home:hover { opacity:1; }
 
     h2 {
         margin-top: 45px;
         margin-bottom: 15px;
         font-size: 1.9rem;
-        border-bottom: 2px solid #A87555;
+        border-bottom: 2px solid var(--cafe);
         display: inline-block;
         padding-bottom: 5px;
     }
 
-    /* ==================== ITEMS ==================== */
     .item {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 14px 0;
-        border-bottom: 1px solid rgba(168,117,85,0.25);
+        border-bottom: 1px solid var(--bord);
         position: relative;
     }
 
     .name {
         font-weight: 600;
-        max-width: 62%;
-        font-size: 1.2rem;
+        max-width: 63%;
+        font-size: 1.22rem;
     }
 
     .price {
         margin-right: 12px;
-        font-size: 1.2rem;
+        font-size: 1.22rem;
         opacity: 0.85;
     }
 
     .add-btn {
-        width: 46px;
-        height: 46px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        background: #fff;
-        border: 2px solid #A87555;
-        color: #A87555;
+        background: white;
+        border: 2px solid var(--cafe);
+        color: var(--cafe);
         font-size: 23px;
         display: flex;
         justify-content: center;
@@ -339,91 +96,20 @@
         background: #F3E5DB;
     }
 
-    /* Animation +1 */
-    .plus-one {
-        position: absolute;
-        color: #A87555;
-        font-size: 1.2rem;
-        font-weight: bold;
-        animation: floatUp 0.8s ease forwards;
-        pointer-events: none;
-        left: 70%;
-        top: -5px;
-    }
-
-    @keyframes floatUp {
-        0% { opacity: 0; transform: translateY(10px); }
-        30% { opacity: 1; }
-        100% { opacity: 0; transform: translateY(-20px); }
-    }
-
-    /* ==================== BOUTON FLOTTANT ==================== */
-    #floating-cart-btn {
-        position: fixed;
-        bottom: 22px;
-        right: 22px;
-        width: 70px;
-        height: 70px;
-        background: none !important;
-        border: none !important;
-        padding: 0;
-        cursor: pointer;
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: transform 0.15s ease;
-    }
-
-    #floating-cart-btn img {
-        width: 70px;
-        height: 70px;
-    }
-
-    #floating-cart-btn.shake { animation: shake 0.4s ease; }
-
-    @keyframes shake {
-        0% { transform: translateX(0); }
-        25% { transform: translateX(-4px); }
-        50% { transform: translateX(4px); }
-        75% { transform: translateX(-4px); }
-        100% { transform: translateX(0); }
-    }
-
-    #cart-count {
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        width: 26px;
-        height: 26px;
-        background: white;
-        border-radius: 50%;
-        border: 2px solid #A87555;
-        color: #A87555;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-        transition: transform 0.2s ease;
-    }
-
-    #cart-count.bump { transform: scale(1.3); }
-
-    /* ==================== BOTTOM SHEET ==================== */
+    /* ----------- PANIER (BOTTOM SHEET) ---------- */
     #cart-sheet {
         position: fixed;
         bottom: -100%;
         left: 0;
         width: 100%;
-        height: 72%;
-        background: rgba(255,255,255,0.55);
-        backdrop-filter: blur(16px);
+        height: 75%;
+        background: rgba(255,255,255,0.70);
+        backdrop-filter: blur(18px);
         box-shadow: 0 -7px 25px rgba(0,0,0,0.18);
-        border-radius: 22px 22px 0 0;
+        border-radius: 24px 24px 0 0;
         transition: 0.38s cubic-bezier(.25,.46,.45,.94);
         z-index: 1000;
-        padding: 22px 20px;
+        padding: 25px 22px;
         overflow-y: auto;
         overflow-x: hidden;
     }
@@ -431,121 +117,232 @@
     #sheet-header {
         position: sticky;
         top: 0;
-        background: rgba(255,255,255,0.4);
+        background: rgba(255,255,255,0.6);
         backdrop-filter: blur(10px);
         padding-bottom: 14px;
         padding-top: 10px;
         z-index: 10;
+        font-size: 1.55rem;
+        font-weight: 700;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        font-size: 1.4rem;
-        font-weight: 700;
+        margin-bottom: 12px;
     }
 
     .cart-item {
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr auto auto;
         align-items: center;
         padding: 14px 0;
-        border-bottom: 1px solid rgba(168,117,85,0.25);
+        border-bottom: 1px solid var(--bord);
         animation: slideIn 0.3s ease forwards;
         opacity: 0;
     }
 
     @keyframes slideIn {
-        from { opacity: 0; transform: translateX(15px); }
-        to { opacity: 1; transform: translateX(0); }
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .qty-controls {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
     .qty-btn {
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
-        border: 2px solid #A87555;
+        border: 2px solid var(--cafe);
         background: white;
         font-size: 22px;
         cursor: pointer;
-        color: #A87555;
+        color: var(--cafe);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: 0.15s ease;
     }
+    .qty-btn:active { transform: scale(0.88); }
 
     .total-line {
-        margin-top: 20px;
-        font-size: 1.5rem;
+        margin-top: 25px;
+        font-size: 1.6rem;
         font-weight: 700;
         text-align: right;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
     }
 
+    #send-whatsapp {
+        width: 100%;
+        padding: 16px;
+        background: var(--cafe);
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 1.35rem;
+        cursor: pointer;
+        font-weight: 600;
+        margin-bottom: 10px;
+        transition: 0.2s;
+    }
+    #send-whatsapp:hover {
+        background: #946a4f;
+    }
+
+    .close-sheet {
+        width: 100%;
+        padding: 14px;
+        background: #C9B8AE;
+        color: white;
+        border: none;
+        border-radius: var(--radius);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* ----------- POP-UP LIVRAISON premium ---------- */
+    #popup-bg {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(3px);
+        display: none;
+        z-index: 2000;
+    }
+
+    #popup {
+        width: 88%;
+        max-width: 480px;
+        background: white;
+        margin: 120px auto 0;
+        padding: 28px;
+        border-radius: 22px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    }
+
+    #popup-title {
+        font-size: 1.8rem;
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 25px;
+    }
+
+    .input {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 14px;
+        border-radius: var(--radius);
+        border: 2px solid var(--bord);
+        font-size: 1.1rem;
+    }
+
+    #confirm-btn {
+        width: 100%;
+        padding: 16px;
+        margin-top: 4px;
+        background: var(--cafe);
+        border: none;
+        border-radius: var(--radius);
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    #cancel-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: var(--radius);
+        background: #D6C8C0;
+        border: none;
+        margin-top: 10px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+    }
 </style>
 </head>
 <body>
 
-<!-- LOADER -->
-<div id="loader"><div class="circle"></div></div>
-
 <h1>Menu CaféMisu</h1>
-<a href="index.html" id="back-home">← Retour à l’accueil</a>
+<a id="back-home" href="index.html">← Retour à l’accueil</a>
 
 <!-- ========================= LES LATTÉS ========================= -->
 <h2>Les lattés</h2>
-<div class="item"><span class="name">Iced Americano</span><span class="price">4.000</span><div class="add-btn" onclick="addToCart('Iced Americano',4000,this)">☕</div></div>
-<div class="item"><span class="name">Spanish Iced Latte</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Spanish Iced Latte',5500,this)">☕</div></div>
-<div class="item"><span class="name">Iced Coffee Latte</span><span class="price">4.500</span><div class="add-btn" onclick="addToCart('Iced Coffee Latte',4500,this)">☕</div></div>
-<div class="item"><span class="name">Lait végétal</span><span class="price">+1000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">☕</div></div>
+<div class="item"><span class="name">Iced Americano</span><span class="price">4.000 FCFA</span><div class="add-btn" onclick="addToCart('Iced Americano',4000)">+</div></div>
+<div class="item"><span class="name">Spanish Iced Latte</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Spanish Iced Latte',5500)">+</div></div>
+<div class="item"><span class="name">Iced Coffee Latte</span><span class="price">4.500 FCFA</span><div class="add-btn" onclick="addToCart('Iced Coffee Latte',4500)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
 
 <!-- ========================= MATCHAS ========================= -->
 <h2>Les matchas</h2>
-<div class="item"><span class="name">Iced Matcha Latte</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Iced Matcha Latte',5500,this)">☕</div></div>
-<div class="item"><span class="name">Coconut Matcha Cloud</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Coconut Matcha Cloud',5500,this)">☕</div></div>
-<div class="item"><span class="name">Strawberry Matcha</span><span class="price">6.500</span><div class="add-btn" onclick="addToCart('Strawberry Matcha',6500,this)">☕</div></div>
-<div class="item"><span class="name">Mango Matcha</span><span class="price">6.500</span><div class="add-btn" onclick="addToCart('Mango Matcha',6500,this)">☕</div></div>
-<div class="item"><span class="name">Lait végétal</span><span class="price">+1000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">☕</div></div>
+<div class="item"><span class="name">Iced Matcha Latte</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Iced Matcha Latte',5500)">+</div></div>
+<div class="item"><span class="name">Coconut Matcha Cloud</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Coconut Matcha Cloud',5500)">+</div></div>
+<div class="item"><span class="name">Strawberry Matcha</span><span class="price">6.500 FCFA</span><div class="add-btn" onclick="addToCart('Strawberry Matcha',6500)">+</div></div>
+<div class="item"><span class="name">Mango Matcha</span><span class="price">6.500 FCFA</span><div class="add-btn" onclick="addToCart('Mango Matcha',6500)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
 
 <!-- ========================= FRAPPÉS ========================= -->
 <h2>Les frappés</h2>
-<div class="item"><span class="name">Latté Frappé</span><span class="price">4.500</span><div class="add-btn" onclick="addToCart('Latté Frappé',4500,this)">☕</div></div>
-<div class="item"><span class="name">Matcha Frappé</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Matcha Frappé',5500,this)">☕</div></div>
-<div class="item"><span class="name">Caramel Frappé</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Caramel Frappé',5500,this)">☕</div></div>
-<div class="item"><span class="name">Lait végétal</span><span class="price">+1000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">☕</div></div>
+<div class="item"><span class="name">Latté Frappé</span><span class="price">4.500 FCFA</span><div class="add-btn" onclick="addToCart('Latté Frappé',4500)">+</div></div>
+<div class="item"><span class="name">Matcha Frappé</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Matcha Frappé',5500)">+</div></div>
+<div class="item"><span class="name">Caramel Frappé</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Caramel Frappé',5500)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
 
 <!-- ========================= BOISSONS CHAUDES ========================= -->
 <h2>Boissons chaudes</h2>
-<div class="item"><span class="name">Café au lait</span><span class="price">3.500</span><div class="add-btn" onclick="addToCart('Café au lait',3500,this)">☕</div></div>
-<div class="item"><span class="name">Thé</span><span class="price">1.500</span><div class="add-btn" onclick="addToCart('Thé',1500,this)">☕</div></div>
-<div class="item"><span class="name">Chocolat chaud</span><span class="price">3.500</span><div class="add-btn" onclick="addToCart('Chocolat chaud',3500,this)">☕</div></div>
-<div class="item"><span class="name">Espresso</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Espresso',1000,this)">☕</div></div>
-<div class="item"><span class="name">Americano</span><span class="price">2.000</span><div class="add-btn" onclick="addToCart('Americano',2000,this)">☕</div></div>
-<div class="item"><span class="name">Cappuccino</span><span class="price">3.500</span><div class="add-btn" onclick="addToCart('Cappuccino',3500,this)">☕</div></div>
-<div class="item"><span class="name">Lait végétal</span><span class="price">+1000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">☕</div></div>
+<div class="item"><span class="name">Café au lait</span><span class="price">3.500 FCFA</span><div class="add-btn" onclick="addToCart('Café au lait',3500)">+</div></div>
+<div class="item"><span class="name">Thé</span><span class="price">1.500 FCFA</span><div class="add-btn" onclick="addToCart('Thé',1500)">+</div></div>
+<div class="item"><span class="name">Chocolat chaud</span><span class="price">3.500 FCFA</span><div class="add-btn" onclick="addToCart('Chocolat chaud',3500)">+</div></div>
+<div class="item"><span class="name">Espresso</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Espresso',1000)">+</div></div>
+<div class="item"><span class="name">Americano</span><span class="price">2.000 FCFA</span><div class="add-btn" onclick="addToCart('Americano',2000)">+</div></div>
+<div class="item"><span class="name">Cappuccino</span><span class="price">3.500 FCFA</span><div class="add-btn" onclick="addToCart('Cappuccino',3500)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
 
 <!-- ========================= SPÉCIAUX ========================= -->
 <h2>Les spéciaux</h2>
-<div class="item"><span class="name">Caramel Machiatto</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Caramel Machiatto',5000,this)">☕</div></div>
-<div class="item"><span class="name">Iced Chocolate</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Iced Chocolate',5000,this)">☕</div></div>
-<div class="item"><span class="name">UBE Latte</span><span class="price">7.000</span><div class="add-btn" onclick="addToCart('UBE Latte',7000,this)">☕</div></div>
-<div class="item"><span class="name">Lait végétal</span><span class="price">+1000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">☕</div></div>
+<div class="item"><span class="name">Caramel Machiatto</span><span class="price">5.000 FCFA</span><div class="add-btn" onclick="addToCart('Caramel Machiatto',5000)">+</div></div>
+<div class="item"><span class="name">Iced Chocolate</span><span class="price">5.000 FCFA</span><div class="add-btn" onclick="addToCart('Iced Chocolate',5000)">+</div></div>
+<div class="item"><span class="name">UBE Latte</span><span class="price">7.000 FCFA</span><div class="add-btn" onclick="addToCart('UBE Latte',7000)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
 
 <!-- ========================= GAZEUSES ========================= -->
 <h2>Boissons gazeuses</h2>
-<div class="item"><span class="name">Coca</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Coca',1000,this)">☕</div></div>
-<div class="item"><span class="name">Sprite</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Sprite',1000,this)">☕</div></div>
-<div class="item"><span class="name">Fanta</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Fanta',1000,this)">☕</div></div>
-<div class="item"><span class="name">Ice Tea</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Ice Tea',1000,this)">☕</div></div>
-<div class="item"><span class="name">Cody’s</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Cody’s',1000,this)">☕</div></div>
-<div class="item"><span class="name">Redbull</span><span class="price">2.000</span><div class="add-btn" onclick="addToCart('Redbull',2000,this)">☕</div></div>
-<div class="item"><span class="name">Perrier</span><span class="price">2.000</span><div class="add-btn" onclick="addToCart('Perrier',2000,this)">☕</div></div>
-<div class="item"><span class="name">Eau</span><span class="price">1.000</span><div class="add-btn" onclick="addToCart('Eau',1000,this)">☕</div></div>
+<div class="item"><span class="name">Coca</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Coca',1000)">+</div></div>
+<div class="item"><span class="name">Sprite</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Sprite',1000)">+</div></div>
+<div class="item"><span class="name">Fanta</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Fanta',1000)">+</div></div>
+<div class="item"><span class="name">Ice Tea</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Ice Tea',1000)">+</div></div>
+<div class="item"><span class="name">Cody’s</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Cody’s',1000)">+</div></div>
+<div class="item"><span class="name">Redbull</span><span class="price">2.000 FCFA</span><div class="add-btn" onclick="addToCart('Redbull',2000)">+</div></div>
+<div class="item"><span class="name">Perrier</span><span class="price">2.000 FCFA</span><div class="add-btn" onclick="addToCart('Perrier',2000)">+</div></div>
+<div class="item"><span class="name">Eau</span><span class="price">1.000 FCFA</span><div class="add-btn" onclick="addToCart('Eau',1000)">+</div></div>
 
-<!-- ========================= BOTTOM SHEET ========================= -->
+<!-- ========================= WEEK-END ========================= -->
+<h2>Spéciaux du weekend</h2>
+<div class="item"><span class="name">Tiramisu Cake Latte</span><span class="price">7.000 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Cake Latte',7000)">+</div></div>
+<div class="item"><span class="name">Tiramisu Cake Matcha Latte</span><span class="price">7.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Cake Matcha Latte',7500)">+</div></div>
+<div class="item"><span class="name">Matcha Banana Pudding</span><span class="price">7.500 FCFA</span><div class="add-btn" onclick="addToCart('Matcha Banana Pudding',7500)">+</div></div>
+<div class="item"><span class="name">LE LATTE XXXL</span><span class="price">25.000 FCFA</span><div class="add-btn" onclick="addToCart('LE LATTE XXXL',25000)">+</div></div>
+<div class="item"><span class="name">LE MATCHA XXXL</span><span class="price">30.000 FCFA</span><div class="add-btn" onclick="addToCart('LE MATCHA XXXL',30000)">+</div></div>
+<div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000)">+</div></div>
+
+<!-- ========================= TIRAMISU ========================= -->
+<h2>Tiramisu</h2>
+<div class="item"><span class="name">Café</span><span class="price">4.000 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Café',4000)">+</div></div>
+<div class="item"><span class="name">Matcha</span><span class="price">5.000 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Matcha',5000)">+</div></div>
+<div class="item"><span class="name">Nutella</span><span class="price">5.000 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Nutella',5000)">+</div></div>
+<div class="item"><span class="name">Fraise</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Fraise',5500)">+</div></div>
+<div class="item"><span class="name">Spéculos</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Spéculos',5500)">+</div></div>
+<div class="item"><span class="name">Ferrero</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Ferrero',5500)">+</div></div>
+<div class="item"><span class="name">Bueno</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Bueno',5500)">+</div></div>
+<div class="item"><span class="name">Pistache</span><span class="price">5.500 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Pistache',5500)">+</div></div>
+<div class="item"><span class="name">Oreo</span><span class="price">5.000 FCFA</span><div class="add-btn" onclick="addToCart('Tiramisu Oreo',5000)">+</div></div>
+
+<!-- ========================= BOTTOM SHEET (PANIER) ========================= -->
 <div id="cart-sheet">
-
     <div id="sheet-header">
         <span>Votre panier</span>
         <span style="cursor:pointer" onclick="closeCart()">✕</span>
@@ -557,194 +354,144 @@
         Total : <span id="cart-total">0</span> FCFA
     </div>
 
-    <button id="send-whatsapp" onclick="openOrderPopup()">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" style="width:22px;">
-        Commander sur WhatsApp
-    </button>
-
+    <button id="send-whatsapp" onclick="openPopup()">Commander sur WhatsApp</button>
     <button class="close-sheet" onclick="closeCart()">Fermer</button>
 </div>
 
-<!-- ========================= BOUTON FLOTTANT ========================= -->
+<!-- BOUTON FLOTTANT -->
 <button id="floating-cart-btn" onclick="openCart()">
-    <img src="tiramisu-icon.png" style="width:70px;height:70px;">
+    <img src="tiramisu-icon.png" style="width:70px; height:70px;">
     <span id="cart-count">0</span>
 </button>
 
+<!-- ========================= POPUP LIVRAISON ========================= -->
+<div id="popup-bg">
+    <div id="popup">
+        <div id="popup-title">Infos de livraison</div>
 
-<!-- ========================= POP-UP PREMIUM STYLE IPHONE ========================= -->
+        <input type="text" id="nom" class="input" placeholder="Nom complet">
+        <input type="text" id="tel" class="input" placeholder="Téléphone">
+        <input type="text" id="adress" class="input" placeholder="Adresse de livraison">
 
-<div id="order-popup-overlay" style="
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 5000;">
+        <button id="confirm-btn" onclick="confirmAndSend()">Confirmer et envoyer</button>
+        <button id="cancel-btn" onclick="closePopup()">Annuler</button>
+    </div>
 </div>
 
-<div id="order-popup" style="
-    position: fixed;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
-    width: 88%;
-    max-width: 420px;
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(16px);
-    border-radius: 18px;
-    padding: 22px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-    z-index: 6001;
-    display: none;
-    opacity: 0;
-    transition: 0.25s ease;
-    font-family: 'Playfair Display', serif;
-    color: #A87555;">
-    
-    <h3 style="margin-top:0; font-size:1.5rem; text-align:center;">Infos de livraison</h3>
+<!-- ========================= JAVASCRIPT PREMIUM ========================= -->
 
-    <input id="client-name" type="text" placeholder="Nom complet" style="
-        width: 100%; padding: 12px; margin-top: 12px;
-        border-radius: 12px; border: 1px solid #C9B8AE; font-size:1.05rem;">
-    
-    <input id="client-phone" type="text" placeholder="Téléphone" style="
-        width: 100%; padding: 12px; margin-top: 12px;
-        border-radius: 12px; border: 1px solid #C9B8AE; font-size:1.05rem;">
-    
-    <input id="client-address" type="text" placeholder="Adresse de livraison" style="
-        width: 100%; padding: 12px; margin-top: 12px;
-        border-radius: 12px; border: 1px solid #C9B8AE; font-size:1.05rem;">
-
-    <button onclick="confirmAndSendWhatsapp()" style="
-        width: 100%; margin-top: 22px;
-        padding: 14px; border:none;
-        background:#A87555; color:white;
-        border-radius: 12px; font-size:1.2rem;
-        font-weight:600; cursor:pointer;">
-        Confirmer et envoyer
-    </button>
-
-    <button onclick="closeOrderPopup()" style="
-        width: 100%; margin-top: 12px;
-        padding: 12px; border:none;
-        background:#C9B8AE; color:white;
-        border-radius: 12px; font-size:1rem;
-        font-weight:600; cursor:pointer;">
-        Annuler
-    </button>
-
-</div>
-
-<!-- ========================= JAVASCRIPT ========================= -->
 <script>
 let cart = [];
 
-/* AJOUTER UN ARTICLE AU PANIER */
-function addToCart(name, price, btn) {
-    let existing = cart.find(i => i.name === name);
-    if (existing) existing.qty++;
-    else cart.push({ name, price, qty: 1 });
+/* ======= AJOUT AU PANIER ======= */
+function addToCart(name, price) {
+    let exist = cart.find(item => item.name === name);
+    if (exist) {
+        exist.qty++;
+    } else {
+        cart.push({ name, price, qty: 1 });
+    }
 
     updateCartCount();
     renderCartItems();
 }
 
-/* METTRE À JOUR LE COMPTEUR */
+/* ======= COMPTEUR PANIER ======= */
 function updateCartCount() {
-    document.getElementById("cart-count").innerText =
-        cart.reduce((s,i)=>s+i.qty,0);
+    const count = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById("cart-count").innerText = count;
 }
 
-/* OUVERTURE / FERMETURE PANIER */
-function openCart(){ document.getElementById("cart-sheet").style.bottom="0"; }
-function closeCart(){ document.getElementById("cart-sheet").style.bottom="-100%"; }
+/* ======= OUVERTURE / FERMETURE PANIER ======= */
+function openCart() {
+    document.getElementById("cart-sheet").style.bottom = "0";
+}
+function closeCart() {
+    document.getElementById("cart-sheet").style.bottom = "-100%";
+}
 
-/* AFFICHER LES ARTICLES DU PANIER */
+/* ======= AFFICHAGE ITEMS ======= */
 function renderCartItems() {
-    let box = document.getElementById("cart-items");
-    box.innerHTML = "";
+    let container = document.getElementById("cart-items");
+    container.innerHTML = "";
 
-    cart.forEach((item,i)=>{
-        box.innerHTML += `
-        <div class="cart-item">
-            <span>${item.name}</span>
+    cart.forEach((item, index) => {
+        let row = document.createElement("div");
+        row.className = "cart-item";
+
+        row.innerHTML = `
+            <span style="font-weight:600; font-size:1.15rem;">${item.name}</span>
 
             <div class="qty-controls">
-                <button class="qty-btn" onclick="decreaseQty(${i})">−</button>
-                <span>${item.qty}</span>
-                <button class="qty-btn" onclick="increaseQty(${i})">+</button>
+                <button class="qty-btn" onclick="decreaseQty(${index})">−</button>
+                <span style="font-size:1.2rem;">${item.qty}</span>
+                <button class="qty-btn" onclick="increaseQty(${index})">+</button>
             </div>
 
-            <span>${item.price * item.qty} FCFA</span>
-        </div>`;
+            <span style="font-size:1.2rem;">${(item.price * item.qty).toLocaleString()} FCFA</span>
+        `;
+
+        container.appendChild(row);
     });
 
     updateTotal();
 }
 
-/* MODIFIER QUANTITÉ */
-function increaseQty(i){ cart[i].qty++; renderCartItems(); updateCartCount(); }
-function decreaseQty(i){
+/* ======= QUANTITÉS ======= */
+function increaseQty(i) {
+    cart[i].qty++;
+    renderCartItems();
+    updateCartCount();
+}
+function decreaseQty(i) {
     cart[i].qty--;
-    if(cart[i].qty<=0) cart.splice(i,1);
-    renderCartItems(); updateCartCount();
+    if (cart[i].qty <= 0) cart.splice(i,1);
+    renderCartItems();
+    updateCartCount();
 }
 
-/* TOTAL */
-function updateTotal(){
-    let t = cart.reduce((s,i)=>s+i.price*i.qty,0);
-    document.getElementById("cart-total").innerText = t.toLocaleString();
+/* ======= TOTAL ======= */
+function updateTotal() {
+    let total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    document.getElementById("cart-total").innerText = total.toLocaleString();
 }
 
-/* POP-UP */
-function openOrderPopup() {
-    document.getElementById("order-popup-overlay").style.display = "flex";
-
-    const popup = document.getElementById("order-popup");
-    popup.style.display = "block";
-
-    setTimeout(() => {
-        popup.style.opacity = "1";
-        popup.style.transform = "translate(-50%, -50%) scale(1)";
-    }, 10);
+/* ======= POPUP INFOS LIVRAISON ======= */
+function openPopup() {
+    if (cart.length === 0) {
+        alert("Votre panier est vide.");
+        return;
+    }
+    document.getElementById("popup-bg").style.display = "block";
 }
 
-function closeOrderPopup() {
-    const popup = document.getElementById("order-popup");
-    popup.style.opacity = "0";
-    popup.style.transform = "translate(-50%, -50%) scale(0.8)";
-
-    setTimeout(() => {
-        popup.style.display = "none";
-        document.getElementById("order-popup-overlay").style.display = "none";
-    }, 200);
+function closePopup() {
+    document.getElementById("popup-bg").style.display = "none";
 }
 
-/* CONFIRMATION + ENVOI WHATSAPP */
-function confirmAndSendWhatsapp() {
+/* ======= ENVOI WHATSAPP ======= */
+function confirmAndSend() {
+    let nom = document.getElementById("nom").value.trim();
+    let tel = document.getElementById("tel").value.trim();
+    let adr = document.getElementById("adress").value.trim();
 
-    let name = document.getElementById("client-name").value.trim();
-    let phone = document.getElementById("client-phone").value.trim();
-    let address = document.getElementById("client-address").value.trim();
-
-    if (!name || !phone || !address) {
-        alert("Merci de remplir toutes les informations.");
+    if (!nom || !tel || !adr) {
+        alert("Veuillez remplir toutes les informations.");
         return;
     }
 
-    let message = `Nouvelle commande CaféMisu 🍰☕\n\nClient : ${name}\nTéléphone : ${phone}\nAdresse : ${address}\n\nCommande :\n`;
+    let msg = `Bonjour, je souhaiterais commander :\n\n`;
 
-    cart.forEach(i=>{
-        message += `• ${i.name} x${i.qty} — ${i.price*i.qty} FCFA\n`;
+    cart.forEach(item => {
+        msg += `• ${item.name} x${item.qty} — ${(item.price * item.qty).toLocaleString()} FCFA\n`;
     });
 
-    let total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-    message += `\nTotal : ${total.toLocaleString()} FCFA`;
+    let total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    msg += `\nTotal : ${total.toLocaleString()} FCFA\n\n`;
+    msg += `Nom : ${nom}\nTéléphone : ${tel}\nAdresse : ${adr}\n\nMerci !`;
 
-    const url = `https://wa.me/2250716699999?text=${encodeURIComponent(message)}`;
+    const phone = "2250716699999";
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 
     window.location.href = url;
 }
