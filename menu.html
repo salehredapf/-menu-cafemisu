@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaféMisu – Menu Final</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    background-color: #F9F5F1;
+    font-family: 'Playfair Display', serif;
+    color: #A87555;
+    margin: 0;
+    padding: 0 20px 180px;
+    overflow-x: hidden;
+}
+h1 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 2.7rem;
+    font-weight: 700;
+}
+#back-home {
+    display:block;
+    text-align:center;
+    margin-bottom:20px;
+    text-decoration:none;
+    font-size:1.1rem;
+    color:#A87555;
+    opacity:0.7;
+}
+.item {
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+    border-bottom:1px solid rgba(168,117,85,0.3);
+}
+.add-btn {
+    width:48px;height:48px;border-radius:50%;
+    border:2px solid #A87555;background:white;color:#A87555;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;font-size:22px;
+}
+#floating-cart-btn {
+    position:fixed;bottom:22px;right:22px;width:70px;height:70px;
+    border:none;background:none;cursor:pointer;z-index:999;
+}
+#cart-count {
+    position:absolute;top:-6px;right:-6px;width:26px;height:26px;
+    border-radius:50%;background:white;border:2px solid #A87555;
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:700;color:#A87555;
+}
+#cart-sheet {
+    position:fixed;bottom:-100%;left:0;width:100%;height:72%;
+    background:rgba(255,255,255,0.55);backdrop-filter:blur(16px);
+    border-radius:22px 22px 0 0;transition:0.38s;
+    padding:25px 26px;overflow-y:auto;overflow-x:hidden;
+}
+.cart-item {
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 0;border-bottom:1px solid rgba(168,117,85,0.3);
+}
+.qty-controls {display:flex;gap:10px;align-items:center;}
+.qty-btn {
+    width:34px;height:34px;border-radius:50%;border:2px solid #A87555;
+    background:white;color:#A87555;font-size:20px;cursor:pointer;
+}
+#popup-bg {
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.45);display:none;z-index:2000;
+}
+#popup {
+    width:88%;max-width:420px;background:white;margin:130px auto;
+    padding:28px;border-radius:20px;
+}
+.input {
+    width:100%;padding:14px;border:2px solid rgba(168,117,85,0.35);
+    border-radius:14px;margin-bottom:12px;font-size:1.05rem;
+}
+#confirm-btn, #cancel-btn {
+    width:100%;padding:16px;border:none;border-radius:14px;
+    font-size:1.2rem;font-weight:600;margin-top:10px;
+}
+#confirm-btn {background:#A87555;color:white;}
+#cancel-btn {background:#C9B8AE;color:white;}
+</style>
+</head>
+
+<body>
+
+<h1>Menu CaféMisu</h1>
+<a id="back-home" href="index.html">← Retour</a>
+
+<h2>Les lattés</h2>
+<div class="item"><span>Iced Americano</span><span>4.000</span><div class="add-btn" onclick="addToCart('Iced Americano',4000)">+</div></div>
+
+<!-- MORE ITEMS WOULD CONTINUE HERE (TRUNCATED FOR DEMO) -->
+
+<!-- BOTTOM SHEET PANIER -->
+<div id="cart-sheet">
+    <div style="display:flex;justify-content:space-between;font-size:1.4rem;font-weight:700;">
+        <span>Votre panier</span><span style="cursor:pointer" onclick="closeCart()">✕</span>
+    </div>
+    <div id="cart-items"></div>
+    <div class="total-line">Total : <span id="cart-total">0</span> FCFA</div>
+    <button id="send-whatsapp" onclick="openPopup()">Commander sur WhatsApp</button>
+    <button class="close-sheet" onclick="closeCart()">Fermer</button>
+</div>
+
+<!-- BOUTON PANIER -->
+<button id="floating-cart-btn" onclick="openCart()">
+    <img src="tiramisu-icon.png" style="width:70px;height:70px;">
+    <span id="cart-count">0</span>
+</button>
+
+<!-- POPUP LIVRAISON -->
+<div id="popup-bg">
+    <div id="popup">
+        <h2 style="text-align:center;margin-top:0;">Informations livraison</h2>
+
+        <input class="input" id="nom" placeholder="Nom">
+        <input class="input" id="prenom" placeholder="Prénom">
+        <input class="input" id="tel" placeholder="Téléphone">
+        <input class="input" id="adresse" placeholder="Adresse de livraison">
+
+        <button id="confirm-btn" onclick="confirmAndSend()">Confirmer & envoyer</button>
+        <button id="cancel-btn" onclick="closePopup()">Annuler</button>
+    </div>
+</div>
+
+<script>
+let cart = [];
+
+function addToCart(name, price) {
+    let existing = cart.find(i => i.name === name);
+    if (existing) existing.qty++; else cart.push({name, price, qty:1});
+    renderCartItems();
+    updateCartCount();
+}
+
+function renderCartItems(){
+    let c = document.getElementById("cart-items");
+    c.innerHTML="";
+    cart.forEach((item,i)=>{
+        c.innerHTML += `
+        <div class="cart-item">
+            <span style="max-width:40%;font-weight:600;">${item.name}</span>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="dec(${i})">−</button>
+                <span>${item.qty}</span>
+                <button class="qty-btn" onclick="inc(${i})">+</button>
+            </div>
+            <span>${(item.price*item.qty).toLocaleString()}</span>
+        </div>`;
+    });
+    updateTotal();
+}
+
+function inc(i){ cart[i].qty++; renderCartItems(); updateCartCount(); }
+function dec(i){ cart[i].qty--; if(cart[i].qty<=0) cart.splice(i,1); renderCartItems(); updateCartCount(); }
+
+function updateCartCount(){
+    const count = cart.reduce((s,i)=>s+i.qty,0);
+    document.getElementById("cart-count").innerText = count;
+}
+function updateTotal(){
+    let t = cart.reduce((s,i)=>s+i.qty*i.price,0);
+    document.getElementById("cart-total").innerText = t.toLocaleString();
+}
+
+function openCart(){ document.getElementById("cart-sheet").style.bottom="0"; }
+function closeCart(){ document.getElementById("cart-sheet").style.bottom="-100%"; }
+
+function openPopup(){
+    if(cart.length===0){ alert("Panier vide"); return; }
+    document.getElementById("popup-bg").style.display="block";
+}
+function closePopup(){ document.getElementById("popup-bg").style.display="none"; }
+
+function confirmAndSend(){
+    let nom=document.getElementById("nom").value.trim();
+    let prenom=document.getElementById("prenom").value.trim();
+    let tel=document.getElementById("tel").value.trim();
+    let adr=document.getElementById("adresse").value.trim();
+
+    if(!nom || !prenom || !tel || !adr){
+        alert("Veuillez remplir tous les champs.");
+        return;
+    }
+
+    let msg="Bonjour, commande :\n\n";
+    cart.forEach(i=>{
+        msg += `• ${i.name} x${i.qty} — ${(i.price*i.qty).toLocaleString()} FCFA\n`;
+    });
+    let total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    msg+=`\nTotal : ${total.toLocaleString()} FCFA\n\n`;
+    msg+=`Nom : ${nom}\nPrénom : ${prenom}\nTéléphone : ${tel}\nAdresse : ${adr}`;
+
+    window.location.href="https://wa.me/2250716699999?text="+encodeURIComponent(msg);
+}
+</script>
+
+</body>
+</html>
