@@ -195,12 +195,14 @@
         cursor:pointer;
     }
 
-    .total-line {
-        margin-top:20px;
-        text-align:right;
-        font-size:1.6rem;
-        font-weight:700;
-    }
+.total-line {
+    margin-top:20px;
+    text-align:right;
+    font-size:1.6rem;
+    font-weight:700;
+    padding-right:30px; /* ✅ AJOUT POUR EMPÊCHER LE TEXTE DE TOUCHER LE BORD */
+    box-sizing:border-box;
+}
 
     #send-whatsapp {
         width:100%;
