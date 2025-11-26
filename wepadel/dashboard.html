@@ -24,7 +24,6 @@
 
     h1 { text-align:center; margin-bottom:25px; }
 
-    /* Barres */
     .filter-bar {
         display:flex;
         gap:10px;
@@ -41,6 +40,7 @@
         background:#E5D8CF;
         color:#5D3A2C;
     }
+
     .active {
         background:#5D3A2C !important;
         color:white !important;
@@ -53,7 +53,6 @@
         margin-bottom:20px;
     }
 
-    /* Cartes */
     .order-card {
         background:white;
         padding:20px;
@@ -62,7 +61,6 @@
         box-shadow:0 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* Badge de statut */
     .badge {
         display:inline-block;
         padding:6px 12px;
@@ -71,12 +69,12 @@
         color:white;
         margin-bottom:10px;
     }
-    .badge-new    { background:#A87555; }   /* brun */
-    .badge-served { background:#3B82F6; }   /* bleu */
-    .badge-paid   { background:#EAB308; }   /* jaune */
-    .badge-done   { background:#22C55E; }   /* vert */
 
-    /* Boutons action */
+    .badge-new    { background:#A87555; }
+    .badge-served { background:#3B82F6; }
+    .badge-paid   { background:#EAB308; color:black; }
+    .badge-done   { background:#22C55E; }
+
     .btn-actions {
         display:flex;
         gap:6px;
@@ -110,9 +108,15 @@
     <button class="filter-btn" onclick="setFilter('done')">Commandes terminées</button>
     <button class="filter-btn" onclick="setFilter('all')">Toutes</button>
 </div>
-    
+
+<!-- Choix de la date -->
 <div class="filter-bar">
-    <button class="filter-btn" onclick="toggleSort()">📅 Trier par date</button>
+    <input type="date" id="dateFilter" onchange="loadOrders()" class="filter-btn" style="padding:8px 12px;">
+</div>
+
+<!-- Trier par date -->
+<div class="filter-bar">
+    <button class="filter-btn" onclick="toggleSort()">📅 Trier par date (asc/desc)</button>
 </div>
 
 <!-- EXPORT -->
@@ -139,6 +143,7 @@ const db = firebase.firestore();
 
 /* FILTRES */
 let currentFilter = "active";
+let sortDirection = "desc";
 
 function setFilter(f) {
     currentFilter = f;
@@ -149,20 +154,31 @@ function setFilter(f) {
 
 /* CHARGEMENT COMMANDES */
 function loadOrders() {
-db.collection("orders")
-  .orderBy("timestamp", sortDirection)
-  .onSnapshot(snap => {
+    db.collection("orders")
+      .orderBy("timestamp", sortDirection)
+      .onSnapshot(snap => {
         let html = "";
         const all = [];
+
+        const selectedDate = document.getElementById("dateFilter").value;
 
         snap.forEach(doc => {
             const o = doc.data();
             o.id = doc.id;
-            all.push(o);
 
+            /* Filtre par statut */
             if (currentFilter === "active" && o.status === "done") return;
             if (currentFilter === "done" && o.status !== "done") return;
 
+            /* Filtre par date choisie */
+            if (selectedDate) {
+                const orderDate = o.time?.split(" ")[0]; // format DD/MM/YYYY
+                const [day, month, year] = orderDate.split("/");
+                const iso = `${year}-${month}-${day}`;
+                if (iso !== selectedDate) return;
+            }
+
+            all.push(o);
             html += generateCard(o);
         });
 
@@ -173,6 +189,9 @@ db.collection("orders")
 
 /* CARTE DE COMMANDE */
 function generateCard(o) {
+
+    const total = o.items.reduce((sum, i) => sum + i.price, 0);
+
     const badge =
         o.status === "new"    ? `<span class="badge badge-new">🟫 new</span>` :
         o.status === "served" ? `<span class="badge badge-served">🟦 served</span>` :
@@ -189,6 +208,7 @@ function generateCard(o) {
             ${o.items.map(i => `<li>${i.name} — ${i.price} FCFA</li>`).join("")}
         </ul>
 
+        <p><b>Total :</b> ${total.toLocaleString()} FCFA</p>
         <p><b>Client :</b> ${o.customer}</p>
         <p><b>Heure :</b> ${o.time}</p>
 
@@ -221,17 +241,23 @@ function exportPDF() {
     let y = 10;
 
     (window._exportData || []).forEach(o => {
-        pdf.text(`Table ${o.table} | ${o.time} | ${o.status}`, 10, y); y += 8;
-        o.items.forEach(i => { pdf.text(`- ${i.name} : ${i.price} FCFA`, 14, y); y += 6; });
+        const total = o.items.reduce((s, i) => s + i.price, 0);
+
+        pdf.text(`Table ${o.table} | ${o.time} | ${o.status} | Total: ${total} FCFA`, 10, y); 
+        y += 8;
+
+        o.items.forEach(i => { 
+            pdf.text(`- ${i.name} : ${i.price} FCFA`, 14, y); 
+            y += 6; 
+        });
+
         y += 8;
     });
 
     pdf.save("commandes.pdf");
 }
 
-    /* ------ TRI PAR DATE ------- */
-let sortDirection = "desc"; // par défaut
-
+/* TRI ASC/DESC */
 function toggleSort() {
     sortDirection = sortDirection === "desc" ? "asc" : "desc";
     loadOrders();
