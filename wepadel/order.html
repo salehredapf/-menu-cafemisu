@@ -159,7 +159,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // MENU CAFÉMISU
     const menuItems = [
         { category: "Les frappés", name: "Latté Frappé", price: 4500 },
         { category: "Les frappés", name: "Matcha Frappé", price: 5500 },
@@ -250,9 +249,7 @@
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-    // ------------------- ENVOI COMMANDE FIRESTORE -------------------
     function sendOrderHandler() {
-
         const table = document.getElementById("table-number").value;
         const customer = document.getElementById("client-name").value || "—";
 
@@ -275,12 +272,11 @@
             customer: customer,
             status: "new",
             timestamp: serverTimestamp(),
-            createdAt: serverTimestamp(),
             time: timeString
         })
         .then(() => {
             alert("Votre commande a été envoyée !");
-            window.location.reload();
+            window.location.href = "order.html";
         })
         .catch((error) => {
             console.error("Erreur Firestore :", error);
@@ -290,8 +286,6 @@
 
     document.getElementById("confirm-btn")
             .addEventListener("click", sendOrderHandler);
-
-    window.sendOrder = sendOrderHandler;
 
 </script>
 
