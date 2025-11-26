@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaféMisu × We Padel – Commander</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        background-color: #F9F5F1;
+        font-family: 'Playfair Display', serif;
+        color: #A87555;
+        margin: 0;
+        padding: 0 20px 200px;
+        line-height: 1.65;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 38px;
+        font-size: 2.4rem;
+        font-weight: 700;
+    }
+
+    .item {
+        background: white;
+        padding: 16px;
+        margin: 14px 0;
+        border-radius: 12px;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.07);
+    }
+
+    .item-title {
+        font-size: 1.4rem;
+        margin: 0 0 6px;
+        font-weight: 600;
+    }
+
+    .item-price {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    button.add {
+        background-color: #A87555;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    #cart {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: #A87555;
+        color: white;
+        padding: 18px 22px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    #cart button {
+        background: white;
+        color: #A87555;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.1rem;
+    }
+
+    #checkout {
+        display: none;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        margin-top: 30px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0 22px;
+        border: 1px solid #d7c7bd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    #confirm-btn {
+        width: 100%;
+        background-color: #A87555;
+        color: white;
+        padding: 14px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-top: 12px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>CaféMisu × We Padel<br>Commander depuis votre table</h1>
+
+<div id="menu"></div>
+
+<div id="cart">
+    <span id="cart-count">0 article</span>
+    <button onclick="openCheckout()">Valider</button>
+</div>
+
+<div id="checkout">
+    <h2>Finaliser la commande</h2>
+
+    <label>Numéro de table *</label>
+    <input type="number" id="table-number" placeholder="Ex: 7" required>
+
+    <label>Nom (optionnel)</label>
+    <input type="text" id="client-name" placeholder="Votre nom">
+
+    <button id="confirm-btn" onclick="sendOrder()">Envoyer la commande</button>
+</div>
+
+<script type="module">
+    // ---------------------------------------
+    // 1. CONFIGURATION FIREBASE
+    // ---------------------------------------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from 
+    "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT.appspot.com",
+        messagingSenderId: "000000000000",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ---------------------------------------
+    // 2. MENU (À personnaliser)
+    // ---------------------------------------
+    const menuItems = [
+        { name: "Spanish Latte", price: 3500 },
+        { name: "Matcha Latte", price: 4000 },
+        { name: "Mocha Caramel", price: 3800 },
+        { name: "Banana Pudding", price: 4500 },
+        { name: "Tiramisu Classique", price: 4500 }
+    ];
+
+    const menuDiv = document.getElementById("menu");
+    let cart = [];
+
+    function renderMenu() {
+        menuItems.forEach((item, index) => {
+            menuDiv.innerHTML += `
+                <div class="item">
+                    <div class="item-title">${item.name}</div>
+                    <div class="item-price">${item.price} FCFA</div>
+                    <button class="add" onclick="addToCart(${index})">Ajouter</button>
+                </div>`;
+        });
+    }
+    renderMenu();
+
+    window.addToCart = function(index) {
+        cart.push(menuItems[index]);
+        document.getElementById("cart-count").textContent = cart.length + " article(s)";
+    };
+
+    window.openCheckout = function() {
+        document.getElementById("checkout").style.display = "block";
+        window.scrollTo(0, document.body.scrollHeight);
+    };
+
+    // ---------------------------------------
+    // 3. ENVOI DE LA COMMANDE
+    // ---------------------------------------
+    window.sendOrder = async function() {
+        const table = document.getElementById("table-number").value;
+
+        if (!table) {
+            alert("Veuillez entrer votre numéro de table.");
+            return;
+        }
+
+        await addDoc(collection(db, "orders"), {
+            items: cart,
+            table: table,
+            name: document.getElementById("client-name").value || "—",
+            status: "pending",
+            createdAt: serverTimestamp()
+        });
+
+        alert("Votre commande a été envoyée !");
+        window.location.href = "/"; // retour accueil
+    };
+</script>
+
+</body>
+</html>
