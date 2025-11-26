@@ -139,7 +139,6 @@
     <label>Nom (optionnel)</label>
     <input type="text" id="client-name" placeholder="Votre nom">
 
-    <!-- IMPORTANT : pas de onclick ici -->
     <button id="confirm-btn">Envoyer la commande</button>
 </div>
 
@@ -149,18 +148,18 @@
         from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDb7QI70lVF5vhQahUau5z2E7QOvdte9Y",
-      authDomain: "cafemisu-wepadel.firebaseapp.com",
-      projectId: "cafemisu-wepadel",
-      storageBucket: "cafemisu-wepadel.appspot.com",
-      messagingSenderId: "184586399626",
-      appId: "1:184586399626:web:382a3671ca9b32baba4273"
+        apiKey: "AIzaSyDb7QDl0VF5vhQahUaua5z2EzYQovdt9Y",
+        authDomain: "cafemisu-wepadel.firebaseapp.com",
+        projectId: "cafemisu-wepadel",
+        storageBucket: "cafemisu-wepadel.appspot.com",
+        messagingSenderId: "158465399626",
+        appId: "1:158465399626:web:382a8671ca9b32b3aba4273"
     };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // MENU COMPLET CAFÉMISU
+    // MENU CAFÉMISU
     const menuItems = [
         { category: "Les frappés", name: "Latté Frappé", price: 4500 },
         { category: "Les frappés", name: "Matcha Frappé", price: 5500 },
@@ -252,25 +251,36 @@
         window.scrollTo(0, document.body.scrollHeight);
     };
 
-    // ENVOI DE LA COMMANDE (VERSION FIXÉE)
+    // ------------------- ENVOI COMMANDE FIRESTORE -------------------
     function sendOrderHandler() {
+
         const table = document.getElementById("table-number").value;
+        const customer = document.getElementById("client-name").value || "—";
 
         if (!table) {
             alert("Veuillez entrer votre numéro de table.");
             return;
         }
 
+        const now = new Date();
+        const timeString =
+            now.getDate().toString().padStart(2, "0") + "/" +
+            (now.getMonth()+1).toString().padStart(2, "0") + "/" +
+            now.getFullYear() + " " +
+            now.getHours().toString().padStart(2, "0") + ":" +
+            now.getMinutes().toString().padStart(2, "0");
+
         addDoc(collection(db, "orders"), {
             items: cart,
             table: table,
-            name: document.getElementById("client-name").value || "—",
-            status: "pending",
-            createdAt: serverTimestamp()
+            customer: customer,
+            status: "new",             
+            timestamp: serverTimestamp(),
+            time: timeString
         })
         .then(() => {
             alert("Votre commande a été envoyée !");
-            window.location.href = "/"; 
+            window.location.href = "https://cafemisu.fr/wepadel/order.html";
         })
         .catch((error) => {
             console.error("Erreur Firestore :", error);
@@ -278,12 +288,9 @@
         });
     }
 
-    // Bouton → fonction
-    document
-        .getElementById("confirm-btn")
-        .addEventListener("click", sendOrderHandler);
+    document.getElementById("confirm-btn")
+            .addEventListener("click", sendOrderHandler);
 
-    // Compatible mobile (Appel par window)
     window.sendOrder = sendOrderHandler;
 
 </script>
