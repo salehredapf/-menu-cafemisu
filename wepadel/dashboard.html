@@ -5,9 +5,9 @@
 <title>Dashboard – CaféMisu × We Padel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+<!-- Firebase SDK COMPAT (OBLIGATOIRE) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <style>
     body {
@@ -57,10 +57,7 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    h2 {
-        margin-top: 0;
-        font-size: 1.6rem;
-    }
+    h2 { margin: 0 0 10px; }
 
     .status-row {
         display: flex;
@@ -98,11 +95,6 @@
         font-weight: 600;
         border: none;
         cursor: pointer;
-        transition: 0.2s;
-    }
-
-    .btn-end:hover {
-        background-color: #6D28D9;
     }
 </style>
 </head>
@@ -121,7 +113,9 @@
 
 <div id="orders"></div>
 
+
 <script>
+/* ---------------------- FIREBASE ---------------------- */
 const firebaseConfig = {
     apiKey: "AIzaSyDb7QDl0VF5vhQahUaua5z2EzYQovdt9Y",
     authDomain: "cafemisu-wepadel.firebaseapp.com",
@@ -134,14 +128,86 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+/* ---------------------- FILTRES ---------------------- */
 let currentFilter = "all";
 
 function setFilter(f) {
     currentFilter = f;
+
     document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
-    document.querySelector(`.filter-btn.${f}`).classList.add("active");
+    document.querySelector(`.filter-btn.${f}`)?.classList.add("active");
+
     loadOrders();
 }
 
+/* ---------------------- CHARGEMENT COMMANDES ---------------------- */
 function loadOrders() {
-    db.c
+    db.collection("orders")
+      .orderBy("timestamp", "desc")
+      .onSnapshot(snapshot => {
+
+        let html = "";
+        snapshot.forEach(doc => {
+            const d = doc.data();
+            d.id = doc.id;
+
+            if (currentFilter !== "all" && d.status !== currentFilter)
+                return;
+
+            html += generateOrderCard(d);
+        });
+
+        document.getElementById("orders").innerHTML = html;
+      });
+}
+
+
+/* ---------------------- TEMPLATE ---------------------- */
+function generateOrderCard(d) {
+    return `
+    <div class="order-card">
+        <h2>Table ${d.table}</h2>
+
+        <div class="status-row">
+
+            <button class="status-btn ${d.status==='new' ? 'active-new':''}"
+                onclick="updateStatus('${d.id}','new')">Nouvelle commande</button>
+
+            <button class="status-btn ${d.status==='served' ? 'active-served':''}"
+                onclick="updateStatus('${d.id}','served')">Servi</button>
+
+            <button class="status-btn ${d.status==='paid' ? 'active-paid':''}"
+                onclick="updateStatus('${d.id}','paid')">Payé</button>
+
+            <button class="status-btn ${d.status==='done' ? 'active-done':''}"
+                onclick="updateStatus('${d.id}','done')">Terminé</button>
+        </div>
+
+        <ul>
+            ${d.items.map(i => `<li>${i.name} — ${i.price} FCFA</li>`).join("")}
+        </ul>
+
+        <p><i>Client :</i> ${d.customer || "—"}</p>
+        <p><i>Reçu :</i> ${d.time}</p>
+
+        <div class="order-footer">
+            <button class="btn-end" onclick="finishOrder('${d.id}')">Terminer</button>
+        </div>
+    </div>
+    `;
+}
+
+/* ---------------------- ACTIONS ---------------------- */
+function updateStatus(id, status) {
+    db.collection("orders").doc(id).update({ status });
+}
+
+function finishOrder(id) {
+    db.collection("orders").doc(id).update({ status: "done" });
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>
