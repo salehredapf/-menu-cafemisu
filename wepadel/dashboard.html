@@ -5,7 +5,7 @@
 <title>Dashboard – CaféMisu × We Padel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase -->
+<!-- Firebase SDK (CDN, NON-MODULE) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
@@ -42,16 +42,13 @@
         cursor: pointer;
     }
 
-    .filter-btn.active {
-        color: white;
-    }
+    .filter-btn.active { color: white; }
 
-    /* Couleurs filtres */
-    .active.new     { background: #DC2626 !important; } /* rouge */
-    .active.served  { background: #16A34A !important; } /* vert */
-    .active.paid    { background: #16A34A !important; } /* vert */
-    .active.done    { background: #7C3AED !important; } /* violet */
-    .active.all     { background: #444 !important; }    
+    .active.all     { background: #444 !important; }
+    .active.new     { background: #DC2626 !important; }
+    .active.served  { background: #16A34A !important; }
+    .active.paid    { background: #16A34A !important; }
+    .active.done    { background: #7C3AED !important; }
 
     .order-card {
         background: white;
@@ -61,17 +58,10 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
-    .order-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 14px;
-    }
-
     .status-row {
         display: flex;
         gap: 8px;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .status-btn {
@@ -83,20 +73,10 @@
         border: none;
     }
 
-    /* Couleurs statuts quand actifs */
-    .status-btn.active-new {
-        background: #DC2626;
-        color: white;
-    }
-    .status-btn.active-served,
-    .status-btn.active-paid {
-        background: #16A34A;
-        color: white;
-    }
-    .status-btn.active-done {
-        background: #7C3AED;
-        color: white;
-    }
+    .active-new    { background: #DC2626; color: white; }
+    .active-served { background: #16A34A; color: white; }
+    .active-paid   { background: #16A34A; color: white; }
+    .active-done   { background: #7C3AED; color: white; }
 
     .order-footer {
         display: flex;
@@ -126,7 +106,7 @@
 
 <h1>📋 Commandes – CaféMisu × We Padel</h1>
 
-<!-- BARRE DE FILTRES -->
+<!-- FILTRES -->
 <div class="filter-bar">
     <button class="filter-btn active all" onclick="setFilter('all')">Toutes</button>
     <button class="filter-btn new" onclick="setFilter('new')">Nouvelle commande</button>
@@ -137,7 +117,7 @@
 
 <div id="orders"></div>
 
-<!-- FIREBASE + LOGIQUE -->
+<!-- FIREBASE LOGIC -->
 <script>
 /* ---------------------- CONFIG FIREBASE ---------------------- */
 const firebaseConfig = {
@@ -149,10 +129,10 @@ const firebaseConfig = {
     appId: "1:158465399626:web:382a8671ca9b32b3aba4273"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
-const db  = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-/* ---------------------- AFFICHAGE ---------------------- */
+/* ---------------------- LOGIQUE FILTRES ---------------------- */
 let currentFilter = "all";
 
 function setFilter(f) {
@@ -164,6 +144,7 @@ function setFilter(f) {
     loadOrders();
 }
 
+/* ---------------------- LECTURE FIRESTORE ---------------------- */
 function loadOrders() {
     db.collection("orders")
       .orderBy("timestamp", "asc")
@@ -184,6 +165,7 @@ function loadOrders() {
       });
 }
 
+/* ---------------------- AFFICHAGE COMMANDE ---------------------- */
 function generateOrderCard(d) {
     return `
     <div class="order-card">
@@ -215,7 +197,6 @@ function generateOrderCard(d) {
         <div class="order-footer">
             <button class="btn-end" onclick="finishOrder('${d.id}')">Terminer</button>
         </div>
-
     </div>
     `;
 }
