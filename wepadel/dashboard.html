@@ -5,9 +5,9 @@
 <title>Dashboard – CaféMisu × We Padel</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase SDK (non-modules) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 <style>
     body {
@@ -24,6 +24,7 @@
         margin-bottom: 25px;
     }
 
+    /* -------- FILTRES -------- */
     .filter-bar {
         display: flex;
         gap: 10px;
@@ -43,13 +44,13 @@
     }
 
     .filter-btn.active { color: white; }
-
     .active.all     { background: #444 !important; }
     .active.new     { background: #DC2626 !important; }
     .active.served  { background: #16A34A !important; }
     .active.paid    { background: #16A34A !important; }
     .active.done    { background: #7C3AED !important; }
 
+    /* -------- COMMANDES -------- */
     .order-card {
         background: white;
         padding: 20px;
@@ -58,11 +59,17 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
 
+    h2 {
+        margin-top: 0;
+        font-size: 1.6rem;
+    }
+
+    /* BOUTONS DE STATUT */
     .status-row {
         display: flex;
+        flex-wrap: wrap;
         gap: 8px;
         margin-bottom: 15px;
-        flex-wrap: wrap;
     }
 
     .status-btn {
@@ -79,6 +86,7 @@
     .active-paid   { background: #16A34A; color: white; }
     .active-done   { background: #7C3AED; color: white; }
 
+    /* Footer bouton terminer */
     .order-footer {
         display: flex;
         justify-content: flex-end;
@@ -124,7 +132,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDb7QDl0VF5vhQahUaua5z2EzYQovdt9Y",
     authDomain: "cafemisu-wepadel.firebaseapp.com",
     projectId: "cafemisu-wepadel",
-    storageBucket: "cafemisu-wepadel.firebasestorage.app",
+    storageBucket: "cafemisu-wepadel.appspot.com",
     messagingSenderId: "158465399626",
     appId: "1:158465399626:web:382a8671ca9b32b3aba4273"
 };
@@ -144,21 +152,19 @@ function setFilter(f) {
     loadOrders();
 }
 
-/* ---------------------- LECTURE FIRESTORE ---------------------- */
+/* ---------------------- CHARGEMENT FIRESTORE ---------------------- */
+
 function loadOrders() {
     db.collection("orders")
-      .orderBy("createdAt", "asc")   // FIXED!
+      .orderBy("timestamp", "asc")
       .onSnapshot(snapshot => {
-
+        
         let html = "";
-
         snapshot.forEach(doc => {
-            let d = doc.data();
+            const d = doc.data();
             d.id = doc.id;
 
-            // Convert old statuses
-            if (d.status === "preparing") d.status = "new";
-
+            // Filtre
             if (currentFilter !== "all" && d.status !== currentFilter)
                 return;
 
@@ -169,33 +175,42 @@ function loadOrders() {
       });
 }
 
-/* ---------------------- GENERATE CARD ---------------------- */
+/* ---------------------- CARD COMMANDE ---------------------- */
+
 function generateOrderCard(d) {
     return `
     <div class="order-card">
-
         <h2>Table ${d.table}</h2>
 
         <div class="status-row">
-            <button class="status-btn ${d.status==='new'? 'active-new':''}"
-                onclick="updateStatus('${d.id}','new')">Nouvelle commande</button>
 
-            <button class="status-btn ${d.status==='served'? 'active-served':''}"
-                onclick="updateStatus('${d.id}','served')">Servi</button>
+            <button class="status-btn ${d.status==='new' ? 'active-new':''}"
+                onclick="updateStatus('${d.id}','new')">
+                Nouvelle commande
+            </button>
 
-            <button class="status-btn ${d.status==='paid'? 'active-paid':''}"
-                onclick="updateStatus('${d.id}','paid')">Payé</button>
+            <button class="status-btn ${d.status==='served' ? 'active-served':''}"
+                onclick="updateStatus('${d.id}','served')">
+                Servi
+            </button>
 
-            <button class="status-btn ${d.status==='done'? 'active-done':''}"
-                onclick="updateStatus('${d.id}','done')">Terminé</button>
+            <button class="status-btn ${d.status==='paid' ? 'active-paid':''}"
+                onclick="updateStatus('${d.id}','paid')">
+                Payé
+            </button>
+
+            <button class="status-btn ${d.status==='done' ? 'active-done':''}"
+                onclick="updateStatus('${d.id}','done')">
+                Terminé
+            </button>
         </div>
 
         <ul>
-           ${d.items.map(i => `<li>${i.name} — ${i.price.toLocaleString()} FCFA</li>`).join("")}
+            ${d.items.map(i => `<li>${i.name} — ${i.price.toLocaleString()} FCFA</li>`).join("")}
         </ul>
 
         <p><i>Client :</i> ${d.customer || "—"}</p>
-        <p><i>Reçu :</i> ${d.createdAt || "—"}</p>
+        <p><i>Reçu :</i> ${d.time}</p>
 
         <div class="order-footer">
             <button class="btn-end" onclick="finishOrder('${d.id}')">Terminer</button>
@@ -213,7 +228,7 @@ function finishOrder(id) {
     db.collection("orders").doc(id).update({ status: "done" });
 }
 
-/* ---------------------- START ---------------------- */
+/* ---------------------- INIT ---------------------- */
 loadOrders();
 </script>
 
