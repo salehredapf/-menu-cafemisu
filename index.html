@@ -83,4 +83,57 @@
       color: #A87555;
       display: flex;
       align-items: center;
-      justif
+      justify-content: center;
+      gap: 8px;
+      width: 80%;
+    }
+
+    .btn-whatsapp:hover {
+      background: rgba(168,117,85,0.1);
+      transform: translateY(-3px);
+    }
+
+    .wa-icon {
+      width: 22px;
+      height: 22px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>cafémisu</h1>
+
+    <p>Découvrez nos boissons & desserts<br>faits avec passion.</p>
+
+    <!-- Bouton MENU SUCRÉ -->
+    <a href="menu.html" class="btn">🍰 Menu sucré ☕ </a>
+
+    <!-- Bouton MENU SALÉ (désactivé) -->
+    <div style="opacity:0.55; cursor:not-allowed; margin-top:12px;">
+      <a class="btn" style="pointer-events:none; background:#C9B8AE;">
+        🥪 Menu salé
+      </a>
+      <p style="font-size:0.95rem; margin-top:6px; color:#A87555; opacity:0.85;">
+        Bientôt disponible…
+      </p>
+    </div>
+
+    <!-- WhatsApp -->
+    <a href="https://wa.me/2250716699999" class="btn btn-whatsapp">
+      <img class="wa-icon" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg">
+      Commander
+    </a>
+
+    <!-- ⭐ BOUTON CAFÉMISU × WE PADEL (AJOUTÉ) -->
+    <a href="wepadel/order.html" class="btn" style="margin-top:25px;">
+      🎾 CaféMisu × We Padel — Commander depuis votre table
+    </a>
+
+  </div>
+
+</body>
+</html>
