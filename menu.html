@@ -285,7 +285,7 @@ input {
 <h1>Menu CaféMisu</h1>
 <a id="back-home" href="index.html">← Retour à l’accueil</a>
 
-<!-- ===================== MENU COMPLET ===================== -->
+<!-- ===================== MENU ===================== -->
 
 <h2>Les frappés</h2>
 <div class="item"><span class="name">Latté Frappé</span><span class="price">4.500</span><div class="add-btn" onclick="addToCart('Latté Frappé',4500,this)">+</div></div>
@@ -316,7 +316,7 @@ input {
 <div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">+</div></div>
 
 <h2>Les spéciaux</h2>
-<div class="item"><span class="name">Caramel Machiatto</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Caramel Machiatto',5000,this)">+</div></div>
+<div class="item"><span class="name">Caramel Machiatto</span><span class="price">6.500</span><div class="add-btn" onclick="addToCart('Caramel Machiatto',6500,this)">+</div></div>
 <div class="item"><span class="name">Iced Chocolate</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Iced Chocolate',5000,this)">+</div></div>
 <div class="item"><span class="name">UBE Latte</span><span class="price">7.000</span><div class="add-btn" onclick="addToCart('UBE Latte',7000,this)">+</div></div>
 <div class="item"><span class="name">Lait végétal</span><span class="price">+1.000</span><div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">+</div></div>
@@ -344,14 +344,14 @@ input {
 <div class="item"><span class="name">Matcha</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Tiramisu Matcha',5000,this)">+</div></div>
 <div class="item"><span class="name">Nutella</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Tiramisu Nutella',5000,this)">+</div></div>
 <div class="item"><span class="name">Fraise</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Tiramisu Fraise',5500,this)">+</div></div>
-<div class="item"><span class="name">Spéculos</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Tiramisu Spéculos',5500,this)">+</div></div>
+<div class="item"><span class="name">Spéculos</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Tiramisu Spéculos',5000,this)">+</div></div>
 <div class="item"><span class="name">Ferrero</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Tiramisu Ferrero',5500,this)">+</div></div>
 <div class="item"><span class="name">Bueno</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Tiramisu Bueno',5500,this)">+</div></div>
 <div class="item"><span class="name">Pistache</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Tiramisu Pistache',5500,this)">+</div></div>
 <div class="item"><span class="name">Oreo</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Tiramisu Oreo',5000,this)">+</div></div>
 
-<!-- ===================== PANIER ===================== -->
 
+<!-- ===================== PANIER ===================== -->
 <div id="cart-sheet">
     <div id="sheet-header">
         <span>Votre panier</span>
@@ -423,7 +423,7 @@ function addToCart(name,price,btn){
     let p=document.createElement("div");
     p.className="plus-one";
     p.innerText="+1";
-    btn.parentElement.appendChild(p);
+    btn.parentElement.appendAppendChild(p);
     setTimeout(()=>p.remove(),800);
 }
 
