@@ -30,7 +30,6 @@
         color: #3E2A21;
     }
 
-    /* --- BARRES DE FILTRES --- */
     .filter-bar {
         display:flex;
         flex-wrap:wrap;
@@ -60,7 +59,6 @@
         color:white !important;
     }
 
-    /* --- CARTE COMMANDE STYLE POS --- */
     .order-card {
         position:relative;
         background:white;
@@ -76,7 +74,6 @@
         transform:scale(1.01);
     }
 
-    /* Fermeture (X) */
     .delete-btn {
         position:absolute;
         top:12px;
@@ -92,7 +89,6 @@
         font-weight:bold;
     }
 
-    /* Badge statut */
     .badge {
         display:inline-block;
         padding:8px 16px;
@@ -108,7 +104,6 @@
     .badge-paid { background:#EAB308; color:black; }
     .badge-done { background:#22C55E; }
 
-    /* Liste items */
     ul {
         padding-left:20px;
         margin-top:10px;
@@ -120,7 +115,6 @@
         margin-bottom:6px;
     }
 
-    /* --- BOUTONS ACTIONS --- */
     .btn-actions {
         display:flex;
         gap:8px;
@@ -153,24 +147,20 @@
 
 <h1>📋 Commandes – CaféMisu × We Padel</h1>
 
-<!-- FILTRES -->
 <div class="filter-bar">
     <button class="filter-btn active" onclick="setFilter('active')">Actives</button>
     <button class="filter-btn" onclick="setFilter('done')">Terminées</button>
     <button class="filter-btn" onclick="setFilter('all')">Toutes</button>
 </div>
 
-<!-- DATE -->
 <div class="filter-bar">
     <input type="date" id="dateFilter" onchange="loadOrders()" class="filter-btn" style="padding:10px 15px;">
 </div>
 
-<!-- TRI -->
 <div class="filter-bar">
     <button class="filter-btn" onclick="toggleSort()">📅 Tri date (asc/desc)</button>
 </div>
 
-<!-- EXPORT -->
 <div class="filter-bar">
     <button class="filter-btn" onclick="exportXLS()">📄 Export XLS</button>
     <button class="filter-btn" onclick="exportPDF()">🖨️ Export PDF</button>
@@ -179,7 +169,6 @@
 <div id="orders"></div>
 
 <script>
-/* ---------------- FIREBASE ---------------- */
 const firebaseConfig = {
     apiKey: "AIzaSyDb7QDl0VF5vhQahUaua5z2EzYQovdt9Y",
     authDomain: "cafemisu-wepadel.firebaseapp.com",
@@ -192,7 +181,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* FILTRES */
 let currentFilter = "active";
 let sortDirection = "desc";
 
@@ -203,7 +191,6 @@ function setFilter(f) {
     loadOrders();
 }
 
-/* CHARGEMENT COMMANDES */
 function loadOrders() {
     db.collection("orders")
       .orderBy("timestamp", sortDirection)
@@ -235,7 +222,6 @@ function loadOrders() {
       });
 }
 
-/* CARTE COMMANDE */
 function generateCard(o) {
 
     const total = o.items.reduce((sum, i) => sum + i.price, 0);
@@ -271,18 +257,15 @@ function generateCard(o) {
     </div>`;
 }
 
-/* UPDATE STATUT */
 function updateStatus(id, status) {
     db.collection("orders").doc(id).update({ status });
 }
 
-/* DELETE ORDER */
 function deleteOrder(id) {
     if (!confirm("Supprimer définitivement cette commande ?")) return;
     db.collection("orders").doc(id).delete();
 }
 
-/* EXPORT XLS */
 function exportXLS() {
     const ws = XLSX.utils.json_to_sheet(window._exportData || []);
     const wb = XLSX.utils.book_new();
@@ -290,7 +273,6 @@ function exportXLS() {
     XLSX.writeFile(wb, "commandes.xlsx");
 }
 
-/* EXPORT PDF */
 function exportPDF() {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF();
@@ -313,7 +295,6 @@ function exportPDF() {
     pdf.save("commandes.pdf");
 }
 
-/* TRI DATE */
 function toggleSort() {
     sortDirection = sortDirection === "desc" ? "asc" : "desc";
     loadOrders();
