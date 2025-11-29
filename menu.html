@@ -260,7 +260,7 @@ input {
     font-size:1.2rem;
     cursor:pointer;
 }
-    
+
 #close-cart-btn {
     width:100%;
     padding:14px;
@@ -273,10 +273,49 @@ input {
     margin-top:10px;
     cursor:pointer;
 }
+
 #close-cart-btn:hover {
     background:#F3E5DB;
 }
 
+/* Popup variations lait végétal */
+#variant-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+}
+
+#variant-popup {
+    background: white;
+    padding: 25px;
+    width: 85%;
+    max-width: 380px;
+    border-radius: 16px;
+    text-align: center;
+    color: #A87555;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+}
+
+.variant-btn {
+    padding: 12px 20px;
+    background: #F9F5F1;
+    border: 2px solid #A87555;
+    border-radius: 8px;
+    margin: 10px 0;
+    width: 100%;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.variant-btn:hover {
+    background: #F3E5DB;
+}
 </style>
 </head>
 
@@ -291,6 +330,7 @@ input {
 <div class="item"><span class="name">Latté Frappé</span><span class="price">4.500</span><div class="add-btn" onclick="addToCart('Latté Frappé',4500,this)">+</div></div>
 <div class="item"><span class="name">Matcha Frappé</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Matcha Frappé',5500,this)">+</div></div>
 <div class="item"><span class="name">Caramel Frappé</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Caramel Frappé',5500,this)">+</div></div>
+
 <div class="item">
     <span class="name">
         Lait végétal
@@ -301,7 +341,6 @@ input {
     <span class="price">+1.000</span>
     <div class="add-btn" onclick="addToCart('Lait végétal',1000,this)">+</div>
 </div>
-
 
 <h2>Les matchas</h2>
 <div class="item"><span class="name">Iced Matcha Latte</span><span class="price">5.500</span><div class="add-btn" onclick="addToCart('Iced Matcha Latte',5500,this)">+</div></div>
@@ -361,6 +400,7 @@ input {
 <div class="item"><span class="name">Oreo</span><span class="price">5.000</span><div class="add-btn" onclick="addToCart('Tiramisu Oreo',5000,this)">+</div></div>
 
 
+
 <!-- ===================== PANIER ===================== -->
 <div id="cart-sheet">
     <div id="sheet-header">
@@ -377,7 +417,7 @@ input {
     <button id="send-whatsapp" onclick="openPopup()">Commander sur WhatsApp</button>
 </div>
 
-<!-- ===================== POPUP ===================== -->
+<!-- ===================== POPUP USER INFO ===================== -->
 
 <div id="popup-overlay">
     <div id="popup">
@@ -392,17 +432,27 @@ input {
     </div>
 </div>
 
-<!-- ===================== BOUTON FLOTTANT ===================== -->
+<!-- ===================== POPUP VARIANTES LAIT ===================== -->
 
-<button id="floating-cart-btn" onclick="openCart()">
-    <img src="tiramisu-icon.png" width="70" height="70">
-    <span id="cart-count">0</span>
-</button>
+<div id="variant-overlay">
+    <div id="variant-popup">
+        <h2 style="margin-top:0">Choix du lait végétal</h2>
+
+        <button class="variant-btn" onclick="selectVariant('Avoine')">Avoine</button>
+        <button class="variant-btn" onclick="selectVariant('Amande')">Amande</button>
+        <button class="variant-btn" onclick="selectVariant('Soja')">Soja</button>
+        <button class="variant-btn" onclick="selectVariant('Coco')">Coco</button>
+
+        <button class="variant-btn" style="background:white;border-color:#A87555;color:#A87555" onclick="closeVariant()">Annuler</button>
+    </div>
+</div>
 
 <!-- ===================== JAVASCRIPT ===================== -->
 
 <script>
 let cart = [];
+const laitVariants = ["Lait végétal"];
+let pendingLaitItem = null;
 
 // ➤ Met à jour les boutons + pour afficher la quantité
 function updateAddButtons() {
@@ -421,10 +471,17 @@ function updateAddButtons() {
     });
 }
 
-function addToCart(name,price,btn){
-    let exist = cart.find(i=>i.name===name);
-    if(exist){ exist.qty++; }
-    else { cart.push({name,price,qty:1}); }
+function addToCart(name, price, btn) {
+
+    if (laitVariants.includes(name)) {
+        pendingLaitItem = { name, price, btn };
+        document.getElementById("variant-overlay").style.display = "flex";
+        return;
+    }
+
+    let exist = cart.find(i => i.name === name);
+    if (exist) { exist.qty++; }
+    else { cart.push({ name, price, qty: 1 }); }
 
     updateCartCount();
     renderCartItems();
@@ -435,6 +492,26 @@ function addToCart(name,price,btn){
     p.innerText="+1";
     btn.parentElement.appendChild(p);
     setTimeout(()=>p.remove(),800);
+}
+
+function selectVariant(variant) {
+    const base = pendingLaitItem;
+    const finalName = base.name + " – " + variant;
+
+    let exist = cart.find(i => i.name === finalName);
+    if (exist) exist.qty++;
+    else cart.push({ name: finalName, price: base.price, qty: 1 });
+
+    updateCartCount();
+    renderCartItems();
+    updateAddButtons();
+
+    closeVariant();
+}
+
+function closeVariant() {
+    document.getElementById("variant-overlay").style.display = "none";
+    pendingLaitItem = null;
 }
 
 function updateCartCount(){
