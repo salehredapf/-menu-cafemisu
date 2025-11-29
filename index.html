@@ -37,6 +37,19 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* --- HEADER ANIMÉ --- */
+    .header {
+      opacity: 0;
+      transform: translateY(-18px);
+      animation: headerIn 1.0s ease forwards;
+      animation-delay: 0.25s;
+    }
+
+    @keyframes headerIn {
+      0%   { opacity: 0; transform: translateY(-18px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     h1 {
       font-size: 3.3rem;
       font-weight: 700;
@@ -52,7 +65,7 @@
       line-height: 1.45;
     }
 
-    /* Buttons */
+    /* BUTTONS */
     .btn {
       display: block;
       padding: 16px 30px;
@@ -69,12 +82,11 @@
       opacity: 0;
     }
 
-    /* Appears softly one by one */
-    .btn:nth-of-type(1) { animation-delay: 0.15s; }
-    .btn:nth-of-type(2) { animation-delay: 0.20s; }
-    .btn:nth-of-type(3) { animation-delay: 0.25s; }
-    .btn:nth-of-type(4) { animation-delay: 0.30s; }
-    .btn:nth-of-type(5) { animation-delay: 0.35s; }
+    .btn:nth-of-type(1) { animation-delay: 0.35s; }
+    .btn:nth-of-type(2) { animation-delay: 0.45s; }
+    .btn:nth-of-type(3) { animation-delay: 0.55s; }
+    .btn:nth-of-type(4) { animation-delay: 0.65s; }
+    .btn:nth-of-type(5) { animation-delay: 0.75s; }
 
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(12px); }
@@ -86,7 +98,7 @@
       transform: translateY(-3px);
     }
 
-    /* WhatsApp button refined */
+    /* WHATSAPP */
     .btn-whatsapp {
       background: transparent;
       border: 1.5px solid #A87555;
@@ -108,13 +120,13 @@
       height: 22px;
     }
 
-    /* Disabled button block */
+    /* DISABLED MENU */
     .disabled-block {
       opacity: 0.55;
       cursor: not-allowed;
       margin-top: 16px;
       animation: slideUp 0.6s ease forwards;
-      animation-delay: 0.20s;
+      animation-delay: 0.45s;
       opacity: 0;
     }
 
@@ -129,6 +141,7 @@
       color: #A87555;
       opacity: 0.85;
     }
+
   </style>
 </head>
 
@@ -136,12 +149,14 @@
 
   <div class="container">
 
-    <h1>cafémisu</h1>
-
-    <p class="baseline">
-      Découvrez nos boissons & desserts<br>
-      faits avec passion.
-    </p>
+    <!-- HEADER ANIMÉ -->
+    <div class="header">
+      <h1>cafémisu</h1>
+      <p class="baseline">
+        Découvrez nos boissons & desserts<br>
+        faits avec passion.
+      </p>
+    </div>
 
     <!-- MENU SUCRÉ -->
     <a href="menu.html" class="btn">🍰 Menu sucré</a>
