@@ -33,7 +33,7 @@
     }
 
     .back-btn:hover {
-        background: rgba(168, 117, 85, 0.1);
+        background: rgba(168,117,85,0.1);
         transform: translateY(-3px);
     }
 
@@ -136,6 +136,46 @@
         font-size: 1.2rem;
         margin-top: 12px;
     }
+
+    /* Popup variations lait végétal */
+    #variant-overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.55);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    #variant-popup {
+        background: white;
+        padding: 25px;
+        width: 85%;
+        max-width: 380px;
+        border-radius: 16px;
+        text-align: center;
+        color: #A87555;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+    }
+
+    .variant-btn {
+        padding: 12px 20px;
+        background: #F9F5F1;
+        border: 2px solid #A87555;
+        border-radius: 8px;
+        margin: 10px 0;
+        width: 100%;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+    .variant-btn:hover {
+        background: #F3E5DB;
+    }
+
 </style>
 </head>
 
@@ -164,6 +204,21 @@
     <button id="confirm-btn">Envoyer la commande</button>
 </div>
 
+<!-- Popup variations -->
+<div id="variant-overlay">
+    <div id="variant-popup">
+        <h2 style="margin-top:0">Choix du lait végétal</h2>
+
+        <button class="variant-btn" onclick="selectVariant('Avoine')">Avoine</button>
+        <button class="variant-btn" onclick="selectVariant('Amande')">Amande</button>
+        <button class="variant-btn" onclick="selectVariant('Soja')">Soja</button>
+        <button class="variant-btn" onclick="selectVariant('Coco')">Coco</button>
+
+        <button class="variant-btn" style="margin-top:16px;background:white"
+            onclick="closeVariant()">Annuler</button>
+    </div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } 
@@ -181,6 +236,10 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    const LAIT_NAMES = [
+        "Lait végétal",
+    ];
+
     const menuItems = [
         { category: "Les frappés", name: "Latté Frappé", price: 4500 },
         { category: "Les frappés", name: "Matcha Frappé", price: 5500 },
@@ -191,11 +250,7 @@
         { category: "Les matchas", name: "Coconut Matcha Cloud", price: 5500 },
         { category: "Les matchas", name: "Strawberry Matcha", price: 6500 },
         { category: "Les matchas", name: "Mango Matcha", price: 6500 },
-        { category: "Les frappés", name: "Lait végétal – Avoine", price: 1000 },
-        { category: "Les frappés", name: "Lait végétal – Amande", price: 1000 },
-        { category: "Les frappés", name: "Lait végétal – Soja", price: 1000 },
-        { category: "Les frappés", name: "Lait végétal – Coco", price: 1000 },
-
+        { category: "Les matchas", name: "Lait végétal", price: 1000 },
 
         { category: "Les lattés", name: "Iced Americano", price: 4000 },
         { category: "Les lattés", name: "Spanish Iced Latte", price: 5500 },
@@ -244,6 +299,7 @@
 
     const menuDiv = document.getElementById("menu");
     let cart = [];
+    let pendingIndex = null;
 
     function renderMenu() {
         let currentCategory = "";
@@ -257,18 +313,46 @@
                 <div class="item">
                     <div class="item-title">${item.name}</div>
                     <div class="item-price">${item.price.toLocaleString()} FCFA</div>
-                    <button class="add" onclick="addToCart(${index})">Ajouter</button>
+                    <button class="add" onclick="handleAdd(${index})">Ajouter</button>
                 </div>
             `;
         });
     }
     renderMenu();
 
+    window.handleAdd = function(index) {
+        const item = menuItems[index];
+
+        if (LAIT_NAMES.includes(item.name)) {
+            pendingIndex = index;
+            document.getElementById("variant-overlay").style.display = "flex";
+        } else {
+            addToCart(index);
+        }
+    };
+
+    window.selectVariant = function(variant) {
+        const base = menuItems[pendingIndex];
+        cart.push({ name: base.name + " – " + variant, price: base.price });
+
+        updateCartDisplay();
+        closeVariant();
+    };
+
+    window.closeVariant = function() {
+        document.getElementById("variant-overlay").style.display = "none";
+        pendingIndex = null;
+    };
+
     window.addToCart = function(index) {
         cart.push(menuItems[index]);
+        updateCartDisplay();
+    };
+
+    function updateCartDisplay() {
         document.getElementById("cart-count").textContent =
             cart.length + " article(s)";
-    };
+    }
 
     window.openCheckout = function() {
         document.getElementById("checkout").style.display = "block";
@@ -287,7 +371,7 @@
         const now = new Date();
         const timeString =
             now.getDate().toString().padStart(2, "0") + "/" +
-            (now.getMonth()+1).toString().padStart(2, "0") + "/" +
+            (now.getMonth() + 1).toString().padStart(2, "0") + "/" +
             now.getFullYear() + " " +
             now.getHours().toString().padStart(2, "0") + ":" +
             now.getMinutes().toString().padStart(2, "0");
@@ -300,18 +384,18 @@
             timestamp: serverTimestamp(),
             time: timeString
         })
-        .then(() => {
-            alert("Votre commande a été envoyée !");
-            window.location.href = "order.html";
-        })
-        .catch((error) => {
-            console.error("Erreur Firestore :", error);
-            alert("Une erreur est survenue. Réessayez.");
-        });
+            .then(() => {
+                alert("Votre commande a été envoyée !");
+                window.location.href = "order.html";
+            })
+            .catch((error) => {
+                console.error("Erreur Firestore :", error);
+                alert("Une erreur est survenue. Réessayez.");
+            });
     }
 
     document.getElementById("confirm-btn")
-            .addEventListener("click", sendOrderHandler);
+        .addEventListener("click", sendOrderHandler);
 
 </script>
 
