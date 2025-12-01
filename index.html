@@ -77,7 +77,7 @@
       font-size: 1.15rem;
       font-weight: 600;
       text-decoration: none;
-      width: 280px; /* FIX DÉFINITIF */
+      width: 280px; /* largeur fixe */
       transition: 0.15s ease;
       animation: slideUp 0.6s ease forwards;
       box-shadow: 0 6px 14px rgba(0,0,0,0.08);
@@ -85,7 +85,9 @@
       text-align: center;
     }
 
-    .btn:active { transform: scale(0.97); }
+    .btn:active {
+      transform: scale(0.97);
+    }
 
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(12px); }
@@ -106,7 +108,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      width: 280px; /* identique */
+      width: 280px;
     }
 
     .btn-whatsapp:hover {
@@ -130,7 +132,7 @@
     .disabled-block > a {
       pointer-events: none;
       background: #C9B8AE;
-      width: 280px; /* identique */
+      width: 280px;
     }
 
     .note {
@@ -162,13 +164,18 @@
       border-radius: 20px;
       font-weight: 600;
       opacity: 0.95;
+      z-index: 2;
     }
 
+    /* WRAPPER ITC - CENTRAGE PARFAIT */
     .btn-wrapper {
       position: relative;
-      width: 280px; /* même largeur */
+      width: 280px; 
       margin: 26px auto 0;
+      display: flex;
+      justify-content: center; /* recentrage parfait */
     }
+
   </style>
 </head>
 
