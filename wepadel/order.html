@@ -17,9 +17,7 @@
         line-height: 1.65;
     }
 
-    /* --------------------------------------
-        BOUTON RETOUR À L’ACCUEIL — STYLE CAFÉMISU
-    --------------------------------------- */
+    /* BOUTON RETOUR */
     .back-btn {
         display: block;
         width: 80%;
@@ -42,9 +40,7 @@
         transform: translateY(-3px);
     }
 
-    .back-btn:active {
-        transform: scale(0.96);
-    }
+    .back-btn:active { transform: scale(0.96); }
 
     h1 {
         text-align: center;
@@ -91,7 +87,7 @@
         font-size: 1rem;
     }
 
-    /* Cart bottom bar */
+    /* CART */
     #cart {
         position: fixed;
         bottom: 0;
@@ -118,7 +114,7 @@
         font-size: 1.1rem;
     }
 
-    /* Checkout form */
+    /* CHECKOUT */
     #checkout {
         display: none;
         padding: 20px;
@@ -149,7 +145,7 @@
         margin-top: 12px;
     }
 
-    /* Popup variations lait végétal */
+    /* VARIANTS POPUP */
     #variant-overlay {
         position: fixed;
         top: 0; left: 0;
@@ -184,16 +180,12 @@
         transition: .2s;
     }
 
-    .variant-btn:hover {
-        background: #F3E5DB;
-    }
-
+    .variant-btn:hover { background: #F3E5DB; }
 </style>
 </head>
 
 <body>
 
-<!-- ------------------ BOUTON RETOUR ------------------ -->
 <a href="https://cafemisu.fr" class="back-btn">← Retour à l’accueil</a>
 
 <h1>CaféMisu × We Padel</h1>
@@ -217,7 +209,7 @@
     <button id="confirm-btn">Envoyer la commande</button>
 </div>
 
-<!-- Popup variations lait végétal -->
+<!-- VARIANTES LAIT -->
 <div id="variant-overlay">
     <div id="variant-popup">
         <h2 style="margin-top:0">Choix du lait végétal</h2>
@@ -249,9 +241,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const LAIT_NAMES = [
-        "Lait végétal",
-    ];
+    const LAIT_NAMES = ["Lait végétal"];
 
     const menuItems = [
         { category: "Les frappés", name: "Latté Frappé", price: 4500 },
@@ -304,11 +294,11 @@
         { category: "Tiramisu", name: "Tiramisu Matcha", price: 5000 },
         { category: "Tiramisu", name: "Tiramisu Nutella", price: 5000 },
         { category: "Tiramisu", name: "Tiramisu Fraise", price: 5500 },
-        { category: "Tiramisu", name: "Tiramisu Spéculos", price: 5000 }, 
+        { category: "Tiramisu", name: "Tiramisu Spéculos", price: 5000 },
         { category: "Tiramisu", name: "Tiramisu Ferrero", price: 5500 },
         { category: "Tiramisu", name: "Tiramisu Bueno", price: 5500 },
         { category: "Tiramisu", name: "Tiramisu Pistache", price: 5500 },
-        { category: "Tiramisu", name: "Tiramisu Oreo", price: 5000 }
+        { category: "Tiramisu", name: "Tiramisu Oreo", price: 5000 },
         { category: "Tiramisu", name: "Banana Pudding", price: 5000 }
     ];
 
@@ -316,6 +306,7 @@
     let cart = [];
     let pendingIndex = null;
 
+    /** RENDER */
     function renderMenu() {
         let currentCategory = "";
         menuItems.forEach((item, index) => {
@@ -335,6 +326,7 @@
     }
     renderMenu();
 
+    /** ADD */
     window.handleAdd = function(index) {
         const item = menuItems[index];
 
@@ -369,6 +361,7 @@
             cart.length + " article(s)";
     }
 
+    /** CHECKOUT */
     window.openCheckout = function() {
         document.getElementById("checkout").style.display = "block";
         window.scrollTo(0, document.body.scrollHeight);
@@ -411,7 +404,6 @@
 
     document.getElementById("confirm-btn")
         .addEventListener("click", sendOrderHandler);
-
 </script>
 
 </body>
